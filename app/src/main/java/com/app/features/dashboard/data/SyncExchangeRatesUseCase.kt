@@ -31,6 +31,7 @@ class SyncExchangeRatesUseCase(
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            throw e
         }
     }
 }
