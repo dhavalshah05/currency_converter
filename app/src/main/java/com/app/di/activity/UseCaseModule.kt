@@ -1,7 +1,7 @@
 package com.app.di.activity
 
-import com.app.features.dashboard.data.ConfigureExchangeRatesUseCase
-import com.app.services.networking.ApiExecutor
+import com.app.features.dashboard.data.SyncExchangeRatesUseCase
+import com.app.services.networking.repositories.OpenExchangeRemoteRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,9 +12,9 @@ import dagger.hilt.android.components.ActivityComponent
 class UseCaseModule {
 
     @Provides
-    fun provideConfigureExchangeRatesUseCase(
-        apiExecutor: ApiExecutor
-    ) = ConfigureExchangeRatesUseCase(
-        apiExecutor = apiExecutor
+    fun provideSyncExchangeRatesUseCase(
+        openExchangeRemoteRepository: OpenExchangeRemoteRepository
+    ) = SyncExchangeRatesUseCase(
+        openExchangeRemoteRepository = openExchangeRemoteRepository
     )
 }

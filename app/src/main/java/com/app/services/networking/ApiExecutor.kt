@@ -13,8 +13,7 @@ class ApiExecutor(
         url: String,
         crossinline queryParams: ParametersBuilder.() -> Unit = {},
         crossinline headers: HeadersBuilder.() -> Unit = {}
-    ): ApiResponse<T> {
-
+    ): T {
         return try {
             val response = client.get(urlString = url) {
                 url {
@@ -25,13 +24,10 @@ class ApiExecutor(
                 }
             }
 
-            return ApiResponse.Success(
-                statusCode = response.status.value,
-                data = response.body()
-            )
+            response.body()
         } catch (e: Exception) {
             e.printStackTrace()
-            ApiResponse.Error(e)
+            throw e
         }
     }
 }
