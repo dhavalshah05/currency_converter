@@ -1,0 +1,17 @@
+CREATE TABLE IF NOT EXISTS ExchangeRateEntity (
+    shortName TEXT NOT NULL,
+    amount REAL NOT NULL
+);
+
+createExchangeRate:
+INSERT INTO ExchangeRateEntity(shortName, amount)
+VALUES (?, ?);
+
+getAllExchangeRates:
+SELECT *
+FROM ExchangeRateEntity;
+
+getExchangeRateByShortName:
+SELECT *
+FROM ExchangeRateEntity
+WHERE shortName = :shortName;

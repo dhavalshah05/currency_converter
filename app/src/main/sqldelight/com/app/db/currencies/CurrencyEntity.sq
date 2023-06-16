@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS CurrencyEntity (
+    shortName TEXT NOT NULL,
+    fullName TEXT NOT NULL
+);
+
+createCurrency:
+INSERT INTO CurrencyEntity(shortName, fullName)
+VALUES (?, ?);
+
+getAllCurrencies:
+SELECT *
+FROM CurrencyEntity;

@@ -1,5 +1,6 @@
 package com.app.di.activity
 
+import com.app.db.MyDatabase
 import com.app.features.dashboard.data.SyncExchangeRatesUseCase
 import com.app.services.networking.repositories.OpenExchangeRemoteRepository
 import dagger.Module
@@ -13,8 +14,11 @@ class UseCaseModule {
 
     @Provides
     fun provideSyncExchangeRatesUseCase(
-        openExchangeRemoteRepository: OpenExchangeRemoteRepository
+        openExchangeRemoteRepository: OpenExchangeRemoteRepository,
+        myDatabase: MyDatabase
     ) = SyncExchangeRatesUseCase(
-        openExchangeRemoteRepository = openExchangeRemoteRepository
+        openExchangeRemoteRepository = openExchangeRemoteRepository,
+        currencyEntityQueries = myDatabase.currencyEntityQueries,
+        exchangeRateEntityQueries = myDatabase.exchangeRateEntityQueries,
     )
 }
