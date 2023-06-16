@@ -15,8 +15,9 @@ class ConvertRatesUseCaseTest : StringSpec({
     val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
     MyDatabase.Schema.create(driver)
 
-    "given shortName and amount, throw exception if shortName is not available" {
-        val exchangeRateEntityQueries = mockk<ExchangeRateEntityQueries>(
+    "invoke_invalidShortName_throwsIllegalArgumentException" {
+        // Arrange
+        val exchangeRateEntityQueriesMock = mockk<ExchangeRateEntityQueries>(
             relaxed = true,
             relaxUnitFun = true
         ) {
@@ -29,9 +30,10 @@ class ConvertRatesUseCaseTest : StringSpec({
         }
 
         val SUT = ConvertRatesUseCase(
-            exchangeRateEntityQueries = exchangeRateEntityQueries
+            exchangeRateEntityQueries = exchangeRateEntityQueriesMock
         )
 
+        // Act
         assertThrows<IllegalArgumentException> {
             SUT.invoke(
                 shortName = "SAD",
@@ -40,8 +42,9 @@ class ConvertRatesUseCaseTest : StringSpec({
         }
     }
 
-    "given shortName and amount, converts to all amounts" {
-        val exchangeRateEntityQueries = mockk<ExchangeRateEntityQueries>(
+    "invoke_validShortName_exchangeRatesFetchedFromDb" {
+        // Arrange
+        val exchangeRateEntityQueriesMock = mockk<ExchangeRateEntityQueries>(
             relaxed = true,
             relaxUnitFun = true
         ) {
@@ -54,18 +57,46 @@ class ConvertRatesUseCaseTest : StringSpec({
         }
 
         val SUT = ConvertRatesUseCase(
-            exchangeRateEntityQueries = exchangeRateEntityQueries
+            exchangeRateEntityQueries = exchangeRateEntityQueriesMock
         )
+
+        // Act
         val actualConvertedRates = SUT.invoke(
             shortName = "PAK",
             amount = 30.0
         )
 
-        verify(exactly = 1) { exchangeRateEntityQueries
+        // Assert
+        verify(exactly = 1) { exchangeRateEntityQueriesMock
             .getAllExchangeRates()
             .executeAsList()
         }
         Assertions.assertEquals(4, actualConvertedRates.size)
+    }
+
+    "invoke_validShortName_convertedRatesReturned" {
+        // Arrange
+        val exchangeRateEntityQueriesMock = mockk<ExchangeRateEntityQueries>(
+            relaxed = true,
+            relaxUnitFun = true
+        ) {
+            coEvery { getAllExchangeRates().executeAsList() } returns listOf(
+                ExchangeRateEntity("USD", 1.0),
+                ExchangeRateEntity("INR", 80.0),
+                ExchangeRateEntity("CAD", 30.0),
+                ExchangeRateEntity("PAK", 120.0),
+            )
+        }
+
+        val SUT = ConvertRatesUseCase(
+            exchangeRateEntityQueries = exchangeRateEntityQueriesMock
+        )
+
+        // Act
+        val actualConvertedRates = SUT.invoke(
+            shortName = "PAK",
+            amount = 30.0
+        )
 
         // For PAK
         val rateForPak = actualConvertedRates.find { it.destinationShortName == "PAK" }
@@ -91,4 +122,6 @@ class ConvertRatesUseCaseTest : StringSpec({
         requireNotNull(rateForUSD)
         Assertions.assertEquals(0.25, rateForUSD.destinationAmount)
     }
+
+
 })
