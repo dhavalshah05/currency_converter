@@ -11,48 +11,52 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions
 
-class GetCurrenciesUseCaseTest : StringSpec({
-    val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
-    MyDatabase.Schema.create(driver)
+class GetCurrenciesUseCaseTest : StringSpec() {
+    private val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
 
-    "invoke_dbFunctionCalled" {
-        // Arrange
-        val currencyEntityQueries = mockk<CurrencyEntityQueries>(
-            relaxed = true,
-            relaxUnitFun = true
-        )
-        val SUT = GetCurrenciesUseCase(currencyEntityQueries)
+    init {
+        MyDatabase.Schema.create(driver)
 
-        // Act
-        SUT.invoke()
-
-        // Assert
-        verify(exactly = 1) { currencyEntityQueries.getAllCurrencies().executeAsList() }
-    }
-
-    "invoke_currenciesReturned" {
-        // Arrange
-        val currencyEntityQueries = mockk<CurrencyEntityQueries>(
-            relaxed = true,
-            relaxUnitFun = true
-        ) {
-            every { getAllCurrencies().executeAsList() } returns listOf(
-                CurrencyEntity(
-                    shortName = "INR",
-                    fullName = "Indian Rupee"
-                ),
-                CurrencyEntity(
-                    shortName = "USD",
-                    fullName = "United State Dollars"
-                ),
+        "invoke_dbFunctionCalled" {
+            // Arrange
+            val currencyEntityQueries = mockk<CurrencyEntityQueries>(
+                relaxed = true,
+                relaxUnitFun = true
             )
+            val SUT = GetCurrenciesUseCase(currencyEntityQueries)
+
+            // Act
+            SUT.invoke()
+
+            // Assert
+            verify(exactly = 1) { currencyEntityQueries.getAllCurrencies().executeAsList() }
         }
-        val SUT = GetCurrenciesUseCase(currencyEntityQueries)
 
-        // Act
-        val currencies: List<Currency> = SUT.invoke()
+        "invoke_currenciesReturned" {
+            // Arrange
+            val currencyEntityQueries = mockk<CurrencyEntityQueries>(
+                relaxed = true,
+                relaxUnitFun = true
+            ) {
+                every { getAllCurrencies().executeAsList() } returns listOf(
+                    CurrencyEntity(
+                        shortName = "INR",
+                        fullName = "Indian Rupee"
+                    ),
+                    CurrencyEntity(
+                        shortName = "USD",
+                        fullName = "United State Dollars"
+                    ),
+                )
+            }
+            val SUT = GetCurrenciesUseCase(currencyEntityQueries)
 
-        // Assert
-        Assertions.assertEquals(2, currencies.size)
+            // Act
+            val currencies: List<Currency> = SUT.invoke()
+
+            // Assert
+            Assertions.assertEquals(2, currencies.size)
+        }
+
     }
-})
+}
