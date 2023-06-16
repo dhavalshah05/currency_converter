@@ -9,7 +9,7 @@ import org.junit.jupiter.api.assertThrows
 
 class ApiExecutorTest : StringSpec() {
     init {
-        "return result when call with valid data" {
+        "executeGet_success_successReturned" {
             val client = HttpClient(MockEngine { request ->
                 respond(
                     content = "RESULT",
@@ -22,7 +22,7 @@ class ApiExecutorTest : StringSpec() {
             Assertions.assertEquals("RESULT", result)
         }
 
-        "throw exception if request throws exception" {
+        "executeGet_error_exceptionThrown" {
             val client = HttpClient(MockEngine { request ->
                 throw Exception("Sample Exception")
             })
@@ -31,7 +31,6 @@ class ApiExecutorTest : StringSpec() {
             assertThrows<Exception> {
                 val result: String = SUT.executeGet("")
             }
-
         }
     }
 }
