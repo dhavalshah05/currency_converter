@@ -9,7 +9,7 @@ class GetCurrenciesUseCase(
     private val currencyEntityQueries: CurrencyEntityQueries
 ) {
 
-    suspend fun invoke(): List<Currency> {
+    suspend fun getCurrencies(): List<Currency> {
         return withContext(Dispatchers.IO) {
             val currencyEntities = currencyEntityQueries.getAllCurrencies().executeAsList()
             currencyEntities.map {

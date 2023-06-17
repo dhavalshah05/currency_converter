@@ -26,7 +26,7 @@ class GetCurrenciesUseCaseTest : StringSpec() {
             val SUT = GetCurrenciesUseCase(currencyEntityQueries)
 
             // Act
-            SUT.invoke()
+            SUT.getCurrencies()
 
             // Assert
             verify(exactly = 1) { currencyEntityQueries.getAllCurrencies().executeAsList() }
@@ -52,7 +52,7 @@ class GetCurrenciesUseCaseTest : StringSpec() {
             val SUT = GetCurrenciesUseCase(currencyEntityQueries)
 
             // Act
-            val currencies: List<Currency> = SUT.invoke()
+            val currencies: List<Currency> = SUT.getCurrencies()
 
             // Assert
             Assertions.assertEquals(2, currencies.size)
