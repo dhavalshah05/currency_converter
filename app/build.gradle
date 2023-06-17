@@ -71,6 +71,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
 
     // Google
     implementation 'com.google.android.material:material:1.9.0'
@@ -114,4 +115,6 @@ dependencies {
 
     testImplementation "io.ktor:ktor-client-mock:2.3.1"
     testImplementation 'com.squareup.sqldelight:sqlite-driver:1.5.4'
+
+    testImplementation 'app.cash.turbine:turbine:0.13.0'
 }
