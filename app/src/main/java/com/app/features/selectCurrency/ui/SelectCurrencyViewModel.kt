@@ -4,11 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.features.dashboard.data.model.Currency
 import com.app.features.selectCurrency.data.GetCurrenciesUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SelectCurrencyViewModel(
+@HiltViewModel
+class SelectCurrencyViewModel @Inject constructor(
     private val getCurrenciesUseCase: GetCurrenciesUseCase
 ) : ViewModel() {
 
