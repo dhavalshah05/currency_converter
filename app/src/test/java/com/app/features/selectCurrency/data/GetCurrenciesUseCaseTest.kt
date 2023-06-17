@@ -1,4 +1,4 @@
-package com.app.features.dashboard.data
+package com.app.features.selectCurrency.data
 
 import com.app.db.MyDatabase
 import com.app.db.currencies.CurrencyEntity
