@@ -1,6 +1,7 @@
 package com.app.features.dashboard.ui
 
 import app.cash.turbine.testIn
+import com.app.features.dashboard.data.ConvertRatesUseCase
 import com.app.features.dashboard.data.model.ConvertedRate
 import io.kotest.core.spec.style.StringSpec
 import io.mockk.coEvery
@@ -11,14 +12,32 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.Assertions.*
 
+@Suppress("PrivatePropertyName")
 class DashboardViewModelTest : StringSpec() {
 
     companion object {
         private const val AMOUNT = 10.0
         private const val CURRENCY = "INR"
+
+        private val CONVERTED_RATES = listOf(
+            ConvertedRate(
+                sourceShortName = CURRENCY,
+                destinationShortName = "USD",
+                destinationAmount = 100.0,
+                destinationAmountBase = 20.0
+            ),
+            ConvertedRate(
+                sourceShortName = CURRENCY,
+                destinationShortName = "CAD",
+                destinationAmount = 50.0,
+                destinationAmountBase = 5.0
+            )
+        )
     }
 
     private val testDispatcher = StandardTestDispatcher()
+    private lateinit var convertRatesUseCase: ConvertRatesUseCase
+    private lateinit var SUT: DashboardViewModel
 
     init {
         beforeSpec {
@@ -29,12 +48,24 @@ class DashboardViewModelTest : StringSpec() {
             Dispatchers.resetMain()
         }
 
-        "screenState_initViewModel_initialScreenStateReturned" {
+        beforeEach {
+            convertRatesUseCase = mockk(
+                relaxed = true,
+                relaxUnitFun = true,
+            ) {
+                coEvery { invoke(shortName = CURRENCY, amount = AMOUNT) } returns CONVERTED_RATES
+            }
+
+            SUT = DashboardViewModel(
+                convertRatesUseCase = convertRatesUseCase
+            )
+        }
+
+        "init_setInitialScreenState" {
             // Arrange
-            val SUT = createViewModel()
+            val screenStateTurbine = SUT.screenState.testIn(this)
 
             // Act
-            val screenStateTurbine = SUT.screenState.testIn(this)
             val actualScreenState = screenStateTurbine.awaitItem()
             screenStateTurbine.cancel()
 
@@ -45,12 +76,11 @@ class DashboardViewModelTest : StringSpec() {
             assertEquals(0, actualScreenState.convertedRates.size)
         }
 
-        "onAction_changeAmount_amountUpdated" {
+        "onAction_updateAmountInScreenState_whenAmountChanged" {
             // Arrange
-            val SUT = createViewModel()
+            val screenStateTurbine = SUT.screenState.testIn(this)
 
             // Act
-            val screenStateTurbine = SUT.screenState.testIn(this)
             screenStateTurbine.awaitItem()
             SUT.onAction(DashboardScreenAction.OnAmountChange(AMOUNT))
             val actualScreenState = screenStateTurbine.awaitItem()
@@ -60,12 +90,11 @@ class DashboardViewModelTest : StringSpec() {
             assertEquals(AMOUNT, actualScreenState.amount)
         }
 
-        "onAction_changeCurrency_currencyUpdated" {
+        "onAction_updateCurrencyInScreenState_whenCurrencyChanged" {
             // Arrange
-            val SUT = createViewModel()
+            val screenStateTurbine = SUT.screenState.testIn(this)
 
             // Act
-            val screenStateTurbine = SUT.screenState.testIn(this)
             screenStateTurbine.awaitItem()
             SUT.onAction(DashboardScreenAction.OnCurrencyChange(CURRENCY))
             val actualScreenState = screenStateTurbine.awaitItem()
@@ -75,9 +104,8 @@ class DashboardViewModelTest : StringSpec() {
             assertEquals(CURRENCY, actualScreenState.selectedCurrency)
         }
 
-        "onAction_calculateExchangeRates_convertedRatesUpdated" {
+        "onAction_updateConvertedRatesInScreenState_whenExchangeRatesCalculated" {
             // Arrange
-            val SUT = createViewModel()
             val screenStateTurbine = SUT.screenState.testIn(this)
 
             // Act
@@ -99,30 +127,6 @@ class DashboardViewModelTest : StringSpec() {
             assertEquals(2, actualScreenState.convertedRates.size)
             assertFalse(actualScreenState.isLoading)
         }
-    }
-
-    private fun createViewModel(): DashboardViewModel {
-        return DashboardViewModel(
-            convertRatesUseCase = mockk(
-                relaxed = true,
-                relaxUnitFun = true,
-            ) {
-                coEvery { invoke(shortName = CURRENCY, amount = AMOUNT) } returns listOf(
-                    ConvertedRate(
-                        sourceShortName = CURRENCY,
-                        destinationShortName = "USD",
-                        destinationAmount = 100.0,
-                        destinationAmountBase = 20.0
-                    ),
-                    ConvertedRate(
-                        sourceShortName = CURRENCY,
-                        destinationShortName = "CAD",
-                        destinationAmount = 50.0,
-                        destinationAmountBase = 5.0
-                    )
-                )
-            }
-        )
     }
 
 }
