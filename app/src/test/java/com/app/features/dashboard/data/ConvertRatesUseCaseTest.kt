@@ -1,9 +1,7 @@
 package com.app.features.dashboard.data
 
-import com.app.db.MyDatabase
 import com.app.db.exchangeRates.ExchangeRateEntity
 import com.app.db.exchangeRates.ExchangeRateEntityQueries
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import io.kotest.core.spec.style.StringSpec
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -11,16 +9,15 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.assertThrows
 
+@Suppress("PrivatePropertyName")
 class ConvertRatesUseCaseTest : StringSpec() {
 
-    private val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+    private lateinit var exchangeRateEntityQueriesMock: ExchangeRateEntityQueries
+    private lateinit var SUT: ConvertRatesUseCase
 
     init {
-        MyDatabase.Schema.create(driver)
-
-        "invoke_invalidShortName_throwsIllegalArgumentException" {
-            // Arrange
-            val exchangeRateEntityQueriesMock = mockk<ExchangeRateEntityQueries>(
+        beforeEach {
+            exchangeRateEntityQueriesMock = mockk(
                 relaxed = true,
                 relaxUnitFun = true
             ) {
@@ -32,9 +29,13 @@ class ConvertRatesUseCaseTest : StringSpec() {
                 )
             }
 
-            val SUT = ConvertRatesUseCase(
+            SUT = ConvertRatesUseCase(
                 exchangeRateEntityQueries = exchangeRateEntityQueriesMock
             )
+        }
+
+        "invoke_throwIllegalArgumentException_whenInvalidShortName" {
+            // Arrange
 
             // Act
             assertThrows<IllegalArgumentException> {
@@ -43,25 +44,12 @@ class ConvertRatesUseCaseTest : StringSpec() {
                     amount = 30.0
                 )
             }
+
+            // Assert
         }
 
-        "invoke_validShortName_exchangeRatesFetchedFromDb" {
+        "invoke_fetchExchangeRatesFromDb_whenValidShortName" {
             // Arrange
-            val exchangeRateEntityQueriesMock = mockk<ExchangeRateEntityQueries>(
-                relaxed = true,
-                relaxUnitFun = true
-            ) {
-                coEvery { getAllExchangeRates().executeAsList() } returns listOf(
-                    ExchangeRateEntity("USD", 1.0),
-                    ExchangeRateEntity("INR", 80.0),
-                    ExchangeRateEntity("CAD", 30.0),
-                    ExchangeRateEntity("PAK", 120.0),
-                )
-            }
-
-            val SUT = ConvertRatesUseCase(
-                exchangeRateEntityQueries = exchangeRateEntityQueriesMock
-            )
 
             // Act
             val actualConvertedRates = SUT.invoke(
@@ -77,23 +65,8 @@ class ConvertRatesUseCaseTest : StringSpec() {
             Assertions.assertEquals(4, actualConvertedRates.size)
         }
 
-        "invoke_validShortName_convertedRatesReturned" {
+        "invoke_returnConvertedRates_whenValidShortName" {
             // Arrange
-            val exchangeRateEntityQueriesMock = mockk<ExchangeRateEntityQueries>(
-                relaxed = true,
-                relaxUnitFun = true
-            ) {
-                coEvery { getAllExchangeRates().executeAsList() } returns listOf(
-                    ExchangeRateEntity("USD", 1.0),
-                    ExchangeRateEntity("INR", 80.0),
-                    ExchangeRateEntity("CAD", 30.0),
-                    ExchangeRateEntity("PAK", 120.0),
-                )
-            }
-
-            val SUT = ConvertRatesUseCase(
-                exchangeRateEntityQueries = exchangeRateEntityQueriesMock
-            )
 
             // Act
             val actualConvertedRates = SUT.invoke(
