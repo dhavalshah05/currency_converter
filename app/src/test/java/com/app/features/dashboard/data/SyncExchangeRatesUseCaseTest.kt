@@ -1,11 +1,9 @@
 package com.app.features.dashboard.data
 
-import com.app.db.MyDatabase
 import com.app.db.currencies.CurrencyEntityQueries
 import com.app.db.exchangeRates.ExchangeRateEntityQueries
 import com.app.features.dashboard.data.remote.models.ApiExchangeRates
 import com.app.services.networking.repositories.OpenExchangeRemoteRepository
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import io.kotest.core.spec.style.StringSpec
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -15,14 +13,14 @@ import org.junit.jupiter.api.assertThrows
 
 @Suppress("LocalVariableName")
 class SyncExchangeRatesUseCaseTest : StringSpec() {
-    private val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+
+    private lateinit var repository: OpenExchangeRemoteRepository
+    private lateinit var currencyEntityQueries: CurrencyEntityQueries
+    private lateinit var exchangeRateEntityQueries: ExchangeRateEntityQueries
 
     init {
-        MyDatabase.Schema.create(driver)
-
-        "invoke_currenciesApiCalled" {
-            // Arrange
-            val repository = mockk<OpenExchangeRemoteRepository>(
+        beforeEach {
+            repository = mockk(
                 relaxed = true,
                 relaxUnitFun = true
             ) {
@@ -32,16 +30,19 @@ class SyncExchangeRatesUseCaseTest : StringSpec() {
                 )
             }
 
-            val currencyEntityQueries = mockk<CurrencyEntityQueries>(
+            currencyEntityQueries = mockk(
                 relaxed = true,
                 relaxUnitFun = true
             )
 
-            val exchangeRateEntityQueries = mockk<ExchangeRateEntityQueries>(
+            exchangeRateEntityQueries = mockk(
                 relaxed = true,
                 relaxUnitFun = true
             )
+        }
 
+        "invoke_currenciesApiCalled" {
+            // Arrange
             // Act
             val SUT = SyncExchangeRatesUseCase(repository, currencyEntityQueries, exchangeRateEntityQueries)
             SUT.invoke()
@@ -52,26 +53,6 @@ class SyncExchangeRatesUseCaseTest : StringSpec() {
 
         "invoke_currenciesStoreInDb" {
             // Arrange
-            val repository = mockk<OpenExchangeRemoteRepository>(
-                relaxed = true,
-                relaxUnitFun = true
-            ) {
-                coEvery { getCurrencies() } returns mapOf("INR" to "Indian Rupee")
-                coEvery { getExchangeRatesForUSD() } returns ApiExchangeRates(
-                    rates = mapOf("INR" to 80.0)
-                )
-            }
-
-            val currencyEntityQueries = mockk<CurrencyEntityQueries>(
-                relaxed = true,
-                relaxUnitFun = true
-            )
-
-            val exchangeRateEntityQueries = mockk<ExchangeRateEntityQueries>(
-                relaxed = true,
-                relaxUnitFun = true
-            )
-
             // Act
             val SUT = SyncExchangeRatesUseCase(repository, currencyEntityQueries, exchangeRateEntityQueries)
             SUT.invoke()
@@ -82,26 +63,6 @@ class SyncExchangeRatesUseCaseTest : StringSpec() {
 
         "invoke_exchangeRatesApiCalled" {
             // Arrange
-            val repository = mockk<OpenExchangeRemoteRepository>(
-                relaxed = true,
-                relaxUnitFun = true
-            ) {
-                coEvery { getCurrencies() } returns mapOf("INR" to "Indian Rupee")
-                coEvery { getExchangeRatesForUSD() } returns ApiExchangeRates(
-                    rates = mapOf("INR" to 80.0)
-                )
-            }
-
-            val currencyEntityQueries = mockk<CurrencyEntityQueries>(
-                relaxed = true,
-                relaxUnitFun = true
-            )
-
-            val exchangeRateEntityQueries = mockk<ExchangeRateEntityQueries>(
-                relaxed = true,
-                relaxUnitFun = true
-            )
-
             // Act
             val SUT = SyncExchangeRatesUseCase(repository, currencyEntityQueries, exchangeRateEntityQueries)
             SUT.invoke()
@@ -112,26 +73,6 @@ class SyncExchangeRatesUseCaseTest : StringSpec() {
 
         "invoke_exchangeRatesStoredInDb" {
             // Arrange
-            val repository = mockk<OpenExchangeRemoteRepository>(
-                relaxed = true,
-                relaxUnitFun = true
-            ) {
-                coEvery { getCurrencies() } returns mapOf("INR" to "Indian Rupee")
-                coEvery { getExchangeRatesForUSD() } returns ApiExchangeRates(
-                    rates = mapOf("INR" to 80.0)
-                )
-            }
-
-            val currencyEntityQueries = mockk<CurrencyEntityQueries>(
-                relaxed = true,
-                relaxUnitFun = true
-            )
-
-            val exchangeRateEntityQueries = mockk<ExchangeRateEntityQueries>(
-                relaxed = true,
-                relaxUnitFun = true
-            )
-
             // Act
             val SUT = SyncExchangeRatesUseCase(repository, currencyEntityQueries, exchangeRateEntityQueries)
             SUT.invoke()
@@ -140,26 +81,19 @@ class SyncExchangeRatesUseCaseTest : StringSpec() {
             verify(exactly = 1) { exchangeRateEntityQueries.createExchangeRate("INR", 80.0) }
         }
 
-        "throws exception when repository function throws exception" {
-            val repository = mockk<OpenExchangeRemoteRepository>(
+        "invoke_throwException_whenRepositoryThrowException" {
+            // Arrange
+            repository = mockk(
                 relaxed = true,
                 relaxUnitFun = true
             ) {
                 coEvery { getCurrencies() } throws Exception()
             }
 
-            val currencyEntityQueries = mockk<CurrencyEntityQueries>(
-                relaxed = true,
-                relaxUnitFun = true
-            )
-
-            val exchangeRateEntityQueries = mockk<ExchangeRateEntityQueries>(
-                relaxed = true,
-                relaxUnitFun = true
-            )
-
+            // Act
             val SUT = SyncExchangeRatesUseCase(repository, currencyEntityQueries, exchangeRateEntityQueries)
 
+            // Assert
             assertThrows<Exception> { SUT.invoke() }
             coVerify(exactly = 1) { repository.getCurrencies() }
             coVerify(exactly = 0) { repository.getExchangeRatesForUSD() }
