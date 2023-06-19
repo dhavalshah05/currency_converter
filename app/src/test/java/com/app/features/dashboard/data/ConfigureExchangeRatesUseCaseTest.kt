@@ -7,6 +7,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 
+@Suppress("PrivatePropertyName")
 class ConfigureExchangeRatesUseCaseTest : StringSpec() {
 
     companion object {
@@ -16,24 +17,34 @@ class ConfigureExchangeRatesUseCaseTest : StringSpec() {
         )
     }
 
-    private fun getCurrenciesUseCaseWith(currencies: List<Currency>): GetCurrenciesUseCase {
-        return mockk {
-            coEvery { getCurrencies() } returns currencies
-        }
-    }
+    private lateinit var getCurrenciesUseCase: GetCurrenciesUseCase
+    private lateinit var syncExchangeRatesUseCase: SyncExchangeRatesUseCase
+    private lateinit var SUT: ConfigureExchangeRatesUseCase
 
     init {
-        // When invoked - if currencies are empty - sync is invoked
-        // When invoked - if currencies are not empty - sync is not invoked
+        beforeEach {
+            getCurrenciesUseCase = mockk {
+                coEvery { getCurrencies() } returns CURRENCIES
+            }
 
-        "invoke_currenciesEmpty_syncInvoked" {
-            // Arrange
-            val getCurrenciesUseCase = getCurrenciesUseCaseWith(emptyList())
-            val syncExchangeRatesUseCase = mockk<SyncExchangeRatesUseCase>(
+            syncExchangeRatesUseCase = mockk(
                 relaxed = true,
                 relaxUnitFun = true
             )
-            val SUT = ConfigureExchangeRatesUseCase(
+
+            SUT = ConfigureExchangeRatesUseCase(
+                getCurrenciesUseCase = getCurrenciesUseCase,
+                syncExchangeRatesUseCase = syncExchangeRatesUseCase
+            )
+        }
+
+        "invoke_startSync_whenCurrenciesEmpty" {
+            // Arrange
+            getCurrenciesUseCase = mockk {
+                coEvery { getCurrencies() } returns emptyList()
+            }
+
+            SUT = ConfigureExchangeRatesUseCase(
                 getCurrenciesUseCase = getCurrenciesUseCase,
                 syncExchangeRatesUseCase = syncExchangeRatesUseCase
             )
@@ -45,17 +56,8 @@ class ConfigureExchangeRatesUseCaseTest : StringSpec() {
             coVerify(exactly = 1) { syncExchangeRatesUseCase.invoke() }
         }
 
-        "invoke_currenciesNotEmpty_syncNotInvoked" {
+        "invoke_skipSync_whenCurrenciesNotEmpty" {
             // Arrange
-            val getCurrenciesUseCase = getCurrenciesUseCaseWith(CURRENCIES)
-            val syncExchangeRatesUseCase = mockk<SyncExchangeRatesUseCase>(
-                relaxed = true,
-                relaxUnitFun = true
-            )
-            val SUT = ConfigureExchangeRatesUseCase(
-                getCurrenciesUseCase = getCurrenciesUseCase,
-                syncExchangeRatesUseCase = syncExchangeRatesUseCase
-            )
 
             // Act
             SUT.invoke()
