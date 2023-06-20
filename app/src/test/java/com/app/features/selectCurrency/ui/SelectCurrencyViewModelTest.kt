@@ -12,6 +12,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.Assertions.*
 
+@Suppress("PrivatePropertyName")
 class SelectCurrencyViewModelTest : StringSpec() {
 
     companion object {
@@ -22,6 +23,8 @@ class SelectCurrencyViewModelTest : StringSpec() {
     }
 
     private val testDispatcher = StandardTestDispatcher()
+    private lateinit var getCurrenciesUseCase: GetCurrenciesUseCase
+    private lateinit var SUT: SelectCurrencyViewModel
 
     init {
         beforeSpec {
@@ -32,12 +35,20 @@ class SelectCurrencyViewModelTest : StringSpec() {
             Dispatchers.resetMain()
         }
 
-        "init_initialStateUpdated" {
+        beforeEach {
+            getCurrenciesUseCase = mockk()
+            coEvery { getCurrenciesUseCase.getCurrencies() } returns CURRENCIES
+
+            SUT = SelectCurrencyViewModel(
+                getCurrenciesUseCase = getCurrenciesUseCase
+            )
+        }
+
+        "init_setInitialScreenState" {
             // Arrange
-            val SUT = createViewModel()
+            val screenStateTurbine = SUT.screenState.testIn(this)
 
             // Act
-            val screenStateTurbine = SUT.screenState.testIn(this)
             val actualScreenState = screenStateTurbine.awaitItem()
             screenStateTurbine.cancel()
 
@@ -46,12 +57,11 @@ class SelectCurrencyViewModelTest : StringSpec() {
             assertEquals(0, actualScreenState.currencies.size)
         }
 
-        "init_stateUpdated_loadingTrue" {
+        "init_updateLoadingInScreenState" {
             // Arrange
-            val SUT = createViewModel()
+            val screenStateTurbine = SUT.screenState.testIn(this)
 
             // Act
-            val screenStateTurbine = SUT.screenState.testIn(this)
             screenStateTurbine.awaitItem()
             testDispatcher.scheduler.advanceUntilIdle()
             val actualScreenState = screenStateTurbine.awaitItem()
@@ -61,12 +71,11 @@ class SelectCurrencyViewModelTest : StringSpec() {
             assertTrue(actualScreenState.isLoading)
         }
 
-        "init_stateUpdated_currencies" {
+        "init_updateCurrenciesInScreenState_whenUsecaseReturnCurrencies" {
             // Arrange
-            val SUT = createViewModel()
+            val screenStateTurbine = SUT.screenState.testIn(this)
 
             // Act
-            val screenStateTurbine = SUT.screenState.testIn(this)
             screenStateTurbine.awaitItem()
             testDispatcher.scheduler.advanceUntilIdle()
             screenStateTurbine.awaitItem()
@@ -77,9 +86,8 @@ class SelectCurrencyViewModelTest : StringSpec() {
             assertEquals(2, actualScreenState.currencies.size)
         }
 
-        "action_selectCurrency_goBackWithCurrency" {
+        "onAction_updateGoBackState_whenSelectCurrency" {
             // Arrange
-            val SUT = createViewModel()
             val turbine = SUT.goBackWithCurrency.testIn(this)
             val expectedCurrency = CURRENCIES.first()
 
@@ -93,17 +101,6 @@ class SelectCurrencyViewModelTest : StringSpec() {
             assertEquals(result.fullName, expectedCurrency.fullName)
             assertEquals(result.shortName, expectedCurrency.shortName)
         }
-    }
-
-    private fun createViewModel(): SelectCurrencyViewModel {
-        val getCurrenciesUseCase = mockk<GetCurrenciesUseCase>(
-            block = {
-                coEvery { getCurrencies() } returns CURRENCIES
-            }
-        )
-        return SelectCurrencyViewModel(
-            getCurrenciesUseCase = getCurrenciesUseCase
-        )
     }
 
 }
