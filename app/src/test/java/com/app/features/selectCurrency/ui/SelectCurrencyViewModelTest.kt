@@ -44,7 +44,7 @@ class SelectCurrencyViewModelTest : StringSpec() {
             )
         }
 
-        "init_setInitialScreenState" {
+        "viewModel_updateScreenStateWithInitialValues_whenCreateScreenState" {
             // Arrange
             val screenStateTurbine = SUT.screenState.testIn(this)
 
@@ -57,7 +57,7 @@ class SelectCurrencyViewModelTest : StringSpec() {
             assertEquals(0, actualScreenState.currencies.size)
         }
 
-        "init_updateLoadingInScreenState" {
+        "viewModel_updateScreenStateWithLoading_whenInit" {
             // Arrange
             val screenStateTurbine = SUT.screenState.testIn(this)
 
@@ -71,7 +71,7 @@ class SelectCurrencyViewModelTest : StringSpec() {
             assertTrue(actualScreenState.isLoading)
         }
 
-        "init_updateCurrenciesInScreenState_whenUsecaseReturnCurrencies" {
+        "init_updateScreenStateWithCurrencies_whenUsecaseReturnCurrencies" {
             // Arrange
             val screenStateTurbine = SUT.screenState.testIn(this)
 
