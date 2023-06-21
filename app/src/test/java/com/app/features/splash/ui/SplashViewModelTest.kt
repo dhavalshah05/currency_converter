@@ -11,21 +11,26 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.Assertions.*
 
+@Suppress("PrivatePropertyName")
 class SplashViewModelTest : StringSpec() {
 
     private val testDispatcher = StandardTestDispatcher()
+    private lateinit var configureExchangeRatesUseCase: ConfigureExchangeRatesUseCase
+    private lateinit var SUT: SplashViewModel
 
     init {
         beforeSpec { Dispatchers.setMain(testDispatcher) }
         afterSpec { Dispatchers.resetMain() }
 
-        "init_configurationStarted" {
-            // Arrange
-            val configureExchangeRatesUseCase = mockk<ConfigureExchangeRatesUseCase>(relaxed = true, relaxUnitFun = true)
-            val SUT = SplashViewModel(
+        beforeEach {
+            configureExchangeRatesUseCase = mockk(relaxed = true, relaxUnitFun = true)
+            SUT = SplashViewModel(
                 configureExchangeRatesUseCase = configureExchangeRatesUseCase
             )
+        }
 
+        "init_startConfiguration" {
+            // Arrange
             // Act
             testDispatcher.scheduler.advanceUntilIdle()
 
@@ -33,13 +38,8 @@ class SplashViewModelTest : StringSpec() {
             coVerify(exactly = 1) { configureExchangeRatesUseCase.invoke() }
         }
 
-        "init_configureSuccess_navigateToDashboard" {
+        "init_navigateToDashboard_whenConfigurationSuccess" {
             // Arrange
-            val configureExchangeRatesUseCase = mockk<ConfigureExchangeRatesUseCase>(relaxed = true, relaxUnitFun = true)
-            val SUT = SplashViewModel(
-                configureExchangeRatesUseCase = configureExchangeRatesUseCase
-            )
-
             // Act
             val turbine = SUT.navigateToDashboard.testIn(this)
             testDispatcher.scheduler.advanceUntilIdle()
