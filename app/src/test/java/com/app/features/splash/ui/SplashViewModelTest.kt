@@ -1,6 +1,7 @@
 package com.app.features.splash.ui
 
 import app.cash.turbine.testIn
+import app.cash.turbine.turbineScope
 import com.app.features.dashboard.data.ConfigureExchangeRatesUseCase
 import io.kotest.core.spec.style.StringSpec
 import io.mockk.coVerify
@@ -39,15 +40,17 @@ class SplashViewModelTest : StringSpec() {
         }
 
         "init_navigateToDashboard_whenConfigurationSuccess" {
-            // Arrange
-            // Act
-            val turbine = SUT.navigateToDashboard.testIn(this)
-            testDispatcher.scheduler.advanceUntilIdle()
-            val result = turbine.awaitItem()
-            turbine.cancel()
+            turbineScope {
+                // Arrange
+                // Act
+                val turbine = SUT.navigateToDashboard.testIn(this)
+                testDispatcher.scheduler.advanceUntilIdle()
+                val result = turbine.awaitItem()
+                turbine.cancel()
 
-            // Assert
-            assertNotNull(result)
+                // Assert
+                assertNotNull(result)
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.app.features.selectCurrency.ui
 
 import app.cash.turbine.testIn
+import app.cash.turbine.turbineScope
 import com.app.features.dashboard.data.model.Currency
 import com.app.features.selectCurrency.data.GetCurrenciesUseCase
 import io.kotest.core.spec.style.StringSpec
@@ -45,61 +46,69 @@ class SelectCurrencyViewModelTest : StringSpec() {
         }
 
         "viewModel_updateScreenStateWithInitialValues_whenCreateScreenState" {
-            // Arrange
-            val screenStateTurbine = SUT.screenState.testIn(this)
+            turbineScope {
+                // Arrange
+                val screenStateTurbine = SUT.screenState.testIn(this)
 
-            // Act
-            val actualScreenState = screenStateTurbine.awaitItem()
-            screenStateTurbine.cancel()
+                // Act
+                val actualScreenState = screenStateTurbine.awaitItem()
+                screenStateTurbine.cancel()
 
-            // Assert
-            assertFalse(actualScreenState.isLoading)
-            assertEquals(0, actualScreenState.currencies.size)
+                // Assert
+                assertFalse(actualScreenState.isLoading)
+                assertEquals(0, actualScreenState.currencies.size)
+            }
         }
 
         "viewModel_updateScreenStateWithLoading_whenInit" {
-            // Arrange
-            val screenStateTurbine = SUT.screenState.testIn(this)
+            turbineScope {
+                // Arrange
+                val screenStateTurbine = SUT.screenState.testIn(this)
 
-            // Act
-            screenStateTurbine.awaitItem()
-            testDispatcher.scheduler.advanceUntilIdle()
-            val actualScreenState = screenStateTurbine.awaitItem()
-            screenStateTurbine.cancel()
+                // Act
+                screenStateTurbine.awaitItem()
+                testDispatcher.scheduler.advanceUntilIdle()
+                val actualScreenState = screenStateTurbine.awaitItem()
+                screenStateTurbine.cancel()
 
-            // Assert
-            assertTrue(actualScreenState.isLoading)
+                // Assert
+                assertTrue(actualScreenState.isLoading)
+            }
         }
 
         "init_updateScreenStateWithCurrencies_whenUsecaseReturnCurrencies" {
-            // Arrange
-            val screenStateTurbine = SUT.screenState.testIn(this)
+            turbineScope {
+                // Arrange
+                val screenStateTurbine = SUT.screenState.testIn(this)
 
-            // Act
-            screenStateTurbine.awaitItem()
-            testDispatcher.scheduler.advanceUntilIdle()
-            screenStateTurbine.awaitItem()
-            val actualScreenState = screenStateTurbine.awaitItem()
-            screenStateTurbine.cancel()
+                // Act
+                screenStateTurbine.awaitItem()
+                testDispatcher.scheduler.advanceUntilIdle()
+                screenStateTurbine.awaitItem()
+                val actualScreenState = screenStateTurbine.awaitItem()
+                screenStateTurbine.cancel()
 
-            // Assert
-            assertEquals(2, actualScreenState.currencies.size)
+                // Assert
+                assertEquals(2, actualScreenState.currencies.size)
+            }
         }
 
         "onAction_updateGoBackState_whenSelectCurrency" {
-            // Arrange
-            val turbine = SUT.goBackWithCurrency.testIn(this)
-            val expectedCurrency = CURRENCIES.first()
+            turbineScope {
+                // Arrange
+                val turbine = SUT.goBackWithCurrency.testIn(this)
+                val expectedCurrency = CURRENCIES.first()
 
-            // Act
-            SUT.onAction(SelectCurrencyScreenAction.OnSelectCurrency(expectedCurrency))
+                // Act
+                SUT.onAction(SelectCurrencyScreenAction.OnSelectCurrency(expectedCurrency))
 
-            testDispatcher.scheduler.advanceUntilIdle()
-            val result = turbine.awaitItem()
-            turbine.cancel()
+                testDispatcher.scheduler.advanceUntilIdle()
+                val result = turbine.awaitItem()
+                turbine.cancel()
 
-            assertEquals(result.fullName, expectedCurrency.fullName)
-            assertEquals(result.shortName, expectedCurrency.shortName)
+                assertEquals(result.fullName, expectedCurrency.fullName)
+                assertEquals(result.shortName, expectedCurrency.shortName)
+            }
         }
     }
 

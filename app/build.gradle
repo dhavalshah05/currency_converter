@@ -120,5 +120,5 @@ dependencies {
     testImplementation "io.ktor:ktor-client-mock:2.3.1"
     testImplementation 'com.squareup.sqldelight:sqlite-driver:1.5.4'
 
-    testImplementation 'app.cash.turbine:turbine:0.13.0'
+    testImplementation 'app.cash.turbine:turbine:1.0.0'
 }

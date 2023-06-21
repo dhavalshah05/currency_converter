@@ -1,6 +1,7 @@
 package com.app.features.dashboard.ui
 
 import app.cash.turbine.testIn
+import app.cash.turbine.turbineScope
 import com.app.features.dashboard.data.ConvertRatesUseCase
 import com.app.features.dashboard.data.model.ConvertedRate
 import io.kotest.core.spec.style.StringSpec
@@ -62,70 +63,78 @@ class DashboardViewModelTest : StringSpec() {
         }
 
         "init_setInitialScreenState" {
-            // Arrange
-            val screenStateTurbine = SUT.screenState.testIn(this)
+            turbineScope {
+                // Arrange
+                val screenStateTurbine = SUT.screenState.testIn(this)
 
-            // Act
-            val actualScreenState = screenStateTurbine.awaitItem()
-            screenStateTurbine.cancel()
+                // Act
+                val actualScreenState = screenStateTurbine.awaitItem()
+                screenStateTurbine.cancel()
 
-            // Assert
-            assertEquals(0.0, actualScreenState.amount)
-            assertEquals(false, actualScreenState.isLoading)
-            assertEquals("USD", actualScreenState.selectedCurrency)
-            assertEquals(0, actualScreenState.convertedRates.size)
+                // Assert
+                assertEquals(0.0, actualScreenState.amount)
+                assertEquals(false, actualScreenState.isLoading)
+                assertEquals("USD", actualScreenState.selectedCurrency)
+                assertEquals(0, actualScreenState.convertedRates.size)
+            }
         }
 
         "onAction_updateAmountInScreenState_whenAmountChanged" {
-            // Arrange
-            val screenStateTurbine = SUT.screenState.testIn(this)
+            turbineScope {
+                // Arrange
+                val screenStateTurbine = SUT.screenState.testIn(this)
 
-            // Act
-            screenStateTurbine.awaitItem()
-            SUT.onAction(DashboardScreenAction.OnAmountChange(AMOUNT))
-            val actualScreenState = screenStateTurbine.awaitItem()
-            screenStateTurbine.cancel()
+                // Act
+                screenStateTurbine.awaitItem()
+                SUT.onAction(DashboardScreenAction.OnAmountChange(AMOUNT))
+                val actualScreenState = screenStateTurbine.awaitItem()
+                screenStateTurbine.cancel()
 
-            // Assert
-            assertEquals(AMOUNT, actualScreenState.amount)
+                // Assert
+                assertEquals(AMOUNT, actualScreenState.amount)
+            }
         }
 
         "onAction_updateCurrencyInScreenState_whenCurrencyChanged" {
-            // Arrange
-            val screenStateTurbine = SUT.screenState.testIn(this)
+            turbineScope {
+                // Arrange
+                val screenStateTurbine = SUT.screenState.testIn(this)
 
-            // Act
-            screenStateTurbine.awaitItem()
-            SUT.onAction(DashboardScreenAction.OnCurrencyChange(CURRENCY))
-            val actualScreenState = screenStateTurbine.awaitItem()
-            screenStateTurbine.cancel()
+                // Act
+                screenStateTurbine.awaitItem()
+                SUT.onAction(DashboardScreenAction.OnCurrencyChange(CURRENCY))
+                val actualScreenState = screenStateTurbine.awaitItem()
+                screenStateTurbine.cancel()
 
-            // Assert
-            assertEquals(CURRENCY, actualScreenState.selectedCurrency)
+                // Assert
+                assertEquals(CURRENCY, actualScreenState.selectedCurrency)
+            }
         }
 
         "onAction_updateConvertedRatesInScreenState_whenExchangeRatesCalculated" {
-            // Arrange
-            val screenStateTurbine = SUT.screenState.testIn(this)
+            turbineScope {
+                // Arrange
+                val screenStateTurbine = SUT.screenState.testIn(this)
 
-            // Act
-            screenStateTurbine.awaitItem()
-            SUT.onAction(DashboardScreenAction.OnAmountChange(AMOUNT))
-            screenStateTurbine.awaitItem()
+                // Act
+                screenStateTurbine.awaitItem()
+                SUT.onAction(DashboardScreenAction.OnAmountChange(AMOUNT))
+                screenStateTurbine.awaitItem()
 
-            SUT.onAction(DashboardScreenAction.OnCurrencyChange(CURRENCY))
-            screenStateTurbine.awaitItem()
+                SUT.onAction(DashboardScreenAction.OnCurrencyChange(CURRENCY))
+                screenStateTurbine.awaitItem()
 
-            SUT.onAction(DashboardScreenAction.CalculateExchangeRates)
-            testDispatcher.scheduler.advanceUntilIdle()
-            val loadingStartedScreenState = screenStateTurbine.awaitItem()
-            val actualScreenState = screenStateTurbine.awaitItem()
-            screenStateTurbine.cancel()
+                SUT.onAction(DashboardScreenAction.CalculateExchangeRates)
+                testDispatcher.scheduler.advanceUntilIdle()
+                val loadingStartedScreenState = screenStateTurbine.awaitItem()
+                val actualScreenState = screenStateTurbine.awaitItem()
+                screenStateTurbine.cancel()
 
-            // Assert
-            assertTrue(loadingStartedScreenState.isLoading)
-            assertEquals(2, actualScreenState.convertedRates.size)
-            assertFalse(actualScreenState.isLoading)
+                // Assert
+                assertTrue(loadingStartedScreenState.isLoading)
+                assertEquals(2, actualScreenState.convertedRates.size)
+                assertFalse(actualScreenState.isLoading)
+            }
         }
     }
 
