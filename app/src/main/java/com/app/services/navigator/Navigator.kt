@@ -6,4 +6,5 @@ interface Navigator {
     fun getResultContracts(): NavigationResultContracts
     fun goBack()
     fun openSelectCurrencyScreen()
+    fun openDashboardScreen()
 }

@@ -4,6 +4,7 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import com.app.R
 import com.app.services.navigator.contracts.NavigationResultContracts
@@ -52,8 +53,11 @@ class AppNavigator(
         navController.navigate(R.id.selectCurrencyFragment)
     }
 
-    /*val navOptions = NavOptions.Builder()
-        .setPopUpTo(getRootFragmentId(), true)
-        .build()
-    navController.navigate(R.id.selectCurrencyFragment, null, navOptions)*/
+    override fun openDashboardScreen() {
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(getRootFragmentId(), true)
+            .build()
+        navController.navigate(R.id.dashboardFragment, null, navOptions)
+    }
+
 }

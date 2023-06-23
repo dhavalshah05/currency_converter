@@ -33,7 +33,7 @@ class SplashFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.navigateToDashboard.collectLatest {
                     Toast.makeText(requireContext(), "Configuration Done", Toast.LENGTH_SHORT).show()
-                    navigator.openSelectCurrencyScreen()
+                    navigator.openDashboardScreen()
                 }
             }
         }

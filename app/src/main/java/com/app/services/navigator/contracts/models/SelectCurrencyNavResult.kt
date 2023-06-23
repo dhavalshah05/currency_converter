@@ -6,5 +6,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SelectCurrencyNavResult(
-    private val currency: Currency
+    val currency: Currency
 ) : Parcelable
