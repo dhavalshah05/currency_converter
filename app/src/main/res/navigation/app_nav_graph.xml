@@ -8,4 +8,8 @@
         android:id="@+id/splashFragment"
         android:name="com.app.features.splash.ui.SplashFragment" />
 
+    <fragment
+        android:id="@+id/selectCurrencyFragment"
+        android:name="com.app.features.selectCurrency.ui.SelectCurrencyFragment" />
+
 </navigation>

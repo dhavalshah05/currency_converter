@@ -1,0 +1,59 @@
+package com.app.services.navigator
+
+import androidx.annotation.IdRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import com.app.R
+import com.app.services.navigator.contracts.NavigationResultContracts
+
+class AppNavigator(
+    private val activity: AppCompatActivity,
+) : Navigator {
+
+    private val fragmentManager: FragmentManager
+        get() = activity.supportFragmentManager
+
+    private val navController: NavController
+        get() {
+            val navHostFragment =
+                fragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+            return navHostFragment.navController
+        }
+
+    private val childFragmentManager: FragmentManager
+        get() = fragmentManager.fragments.first().childFragmentManager
+
+    private val navigationResultContracts = NavigationResultContracts(fragmentManager)
+
+    private fun getRootFragmentId(): Int {
+        // Here at 0 position, we do not have our own fragments.
+        // User defined fragments will start from position 1.
+        return navController.backQueue[1].destination.id
+    }
+
+    private fun isAvailableInStack(@IdRes id: Int): Boolean {
+        return navController.backQueue.map { it.destination.id }.contains(id)
+    }
+
+    override fun getResultContracts(): NavigationResultContracts {
+        return navigationResultContracts
+    }
+
+    override fun goBack() {
+        val isPopped = navController.popBackStack()
+        if (!isPopped) {
+            activity.finish()
+        }
+    }
+
+    override fun openSelectCurrencyScreen() {
+        navController.navigate(R.id.selectCurrencyFragment)
+    }
+
+    /*val navOptions = NavOptions.Builder()
+        .setPopUpTo(getRootFragmentId(), true)
+        .build()
+    navController.navigate(R.id.selectCurrencyFragment, null, navOptions)*/
+}

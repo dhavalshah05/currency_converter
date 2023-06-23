@@ -21,6 +21,9 @@ class SelectCurrencyViewModel @Inject constructor(
     private val _goBackWithCurrency: Channel<Currency> = Channel()
     val goBackWithCurrency: Flow<Currency> = _goBackWithCurrency.receiveAsFlow()
 
+    private val _goBack: Channel<Unit> = Channel()
+    val goBack: Flow<Unit> = _goBack.receiveAsFlow()
+
     init {
         viewModelScope.launch {
             _screenState.update { it.copy(isLoading = true) }
@@ -34,6 +37,11 @@ class SelectCurrencyViewModel @Inject constructor(
             is SelectCurrencyScreenAction.OnSelectCurrency -> {
                 viewModelScope.launch {
                     _goBackWithCurrency.send(action.currency)
+                }
+            }
+            SelectCurrencyScreenAction.GoBack -> {
+                viewModelScope.launch {
+                    _goBack.send(Unit)
                 }
             }
         }

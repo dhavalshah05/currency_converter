@@ -110,6 +110,23 @@ class SelectCurrencyViewModelTest : StringSpec() {
                 assertEquals(result.shortName, expectedCurrency.shortName)
             }
         }
+
+        "onAction_goBack_whenBackClicked" {
+            turbineScope {
+                // Arrange
+                val turbine = SUT.goBack.testIn(this)
+
+                // Act
+                SUT.onAction(SelectCurrencyScreenAction.GoBack)
+
+                testDispatcher.scheduler.advanceUntilIdle()
+                val result = turbine.awaitItem()
+                turbine.cancel()
+
+                // Assert
+                assertNotNull(result)
+            }
+        }
     }
 
 }
