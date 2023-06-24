@@ -14,8 +14,8 @@ class SyncManagerImpl(
     }
 
     override fun scheduleSyncForOpenExchangeData() {
-        val work = PeriodicWorkRequestBuilder<SyncWorker>(repeatInterval = 15, repeatIntervalTimeUnit = TimeUnit.MINUTES)
-            .setInitialDelay(15, TimeUnit.MINUTES)
+        val work = PeriodicWorkRequestBuilder<SyncWorker>(repeatInterval = 30, repeatIntervalTimeUnit = TimeUnit.MINUTES)
+            .setInitialDelay(30, TimeUnit.MINUTES)
             .setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.SECONDS)
             .build()
 
