@@ -23,6 +23,17 @@ class SyncExchangeRatesUseCase(
                     val value = currenciesResponse[key]!!
                     Currency(shortName = key, fullName = value)
                 }
+
+
+                val exchangeRatesResponse = openExchangeRemoteRepository.getExchangeRatesForUSD()
+                val exchangeRates = exchangeRatesResponse.rates.keys.map { key ->
+                    val value = exchangeRatesResponse.rates[key]!!
+                    ExchangeRate(shortName = key, amount = value)
+                }
+
+                currencyEntityQueries.deleteAll()
+                exchangeRateEntityQueries.deleteAll()
+
                 currencies.forEach { currency ->
                     currencyEntityQueries.createCurrency(
                         shortName = currency.shortName,
@@ -30,11 +41,6 @@ class SyncExchangeRatesUseCase(
                     )
                 }
 
-                val exchangeRatesResponse = openExchangeRemoteRepository.getExchangeRatesForUSD()
-                val exchangeRates = exchangeRatesResponse.rates.keys.map { key ->
-                    val value = exchangeRatesResponse.rates[key]!!
-                    ExchangeRate(shortName = key, amount = value)
-                }
                 exchangeRates.forEach { exchangeRate ->
                     exchangeRateEntityQueries.createExchangeRate(
                         shortName = exchangeRate.shortName,

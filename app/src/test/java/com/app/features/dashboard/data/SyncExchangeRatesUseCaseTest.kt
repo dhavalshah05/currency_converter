@@ -40,6 +40,15 @@ class SyncExchangeRatesUseCaseTest : StringSpec() {
             coVerify(exactly = 1) { repository.getCurrencies() }
         }
 
+        "invoke_deleteCurrenciesFromDb" {
+            // Arrange
+            // Act
+            SUT.invoke()
+
+            // Assert
+            verify(exactly = 1) { currencyEntityQueries.deleteAll() }
+        }
+
         "invoke_storeCurrenciesInDb" {
             // Arrange
             // Act
@@ -56,6 +65,15 @@ class SyncExchangeRatesUseCaseTest : StringSpec() {
 
             // Assert
             coVerify(exactly = 1) { repository.getExchangeRatesForUSD() }
+        }
+
+        "invoke_deleteExchangeRatesFromDb" {
+            // Arrange
+            // Act
+            SUT.invoke()
+
+            // Assert
+            verify(exactly = 1) { exchangeRateEntityQueries.deleteAll() }
         }
 
         "invoke_storeExchangeRatesInDb" {

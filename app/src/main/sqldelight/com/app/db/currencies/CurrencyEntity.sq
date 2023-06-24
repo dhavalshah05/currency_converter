@@ -10,3 +10,6 @@ VALUES (?, ?);
 getAllCurrencies:
 SELECT *
 FROM CurrencyEntity;
+
+deleteAll:
+DELETE FROM CurrencyEntity;
