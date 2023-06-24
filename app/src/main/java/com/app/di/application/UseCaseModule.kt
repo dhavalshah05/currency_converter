@@ -1,4 +1,4 @@
-package com.app.di.activity
+package com.app.di.application
 
 import com.app.db.MyDatabase
 import com.app.features.dashboard.data.ConfigureExchangeRatesUseCase
@@ -9,10 +9,10 @@ import com.app.services.networking.repositories.OpenExchangeRemoteRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 class UseCaseModule {
 
     @Provides
