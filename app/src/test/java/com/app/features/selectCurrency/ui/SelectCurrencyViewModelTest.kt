@@ -1,10 +1,13 @@
 package com.app.features.selectCurrency.ui
 
-import app.cash.turbine.testIn
 import app.cash.turbine.turbineScope
 import com.app.features.dashboard.data.model.Currency
 import com.app.features.selectCurrency.data.GetCurrenciesUseCase
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldNotBeEmpty
+import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.string.shouldBeEmpty
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -125,6 +128,77 @@ class SelectCurrencyViewModelTest : StringSpec() {
 
                 // Assert
                 assertNotNull(result)
+            }
+        }
+
+        "onAction_updateSearchTextInScreenState_whenChangeSearchText" {
+            turbineScope {
+                // Arrange
+                val turbine = SUT.screenState.testIn(this)
+
+                // Act
+                SUT.onAction(SelectCurrencyScreenAction.OnChangeSearchText("Demo"))
+                testDispatcher.scheduler.advanceUntilIdle()
+                val screenState = turbine.expectMostRecentItem()
+                turbine.cancel()
+
+                // Assert
+                screenState.searchText.shouldBeEqual("Demo")
+            }
+        }
+
+        "onAction_shouldNotUpdateSearchTextInScreenState_whenEmptySearchText" {
+            turbineScope {
+                // Arrange
+                val turbine = SUT.screenState.testIn(this)
+
+                // Act
+                SUT.onAction(SelectCurrencyScreenAction.OnChangeSearchText("  "))
+                testDispatcher.scheduler.advanceUntilIdle()
+                val expectedScreenStateWithEmptyString = turbine.expectMostRecentItem()
+                turbine.cancel()
+
+                // Assert
+                expectedScreenStateWithEmptyString.searchText.shouldBeEmpty()
+            }
+        }
+
+        "onAction_updateFilteredCurrenciesInScreenState_whenValidSearchText" {
+            turbineScope {
+                // Arrange
+                val turbine = SUT.screenState.testIn(this)
+
+                // Act
+                SUT.onAction(SelectCurrencyScreenAction.OnChangeSearchText("Indian"))
+                testDispatcher.scheduler.advanceUntilIdle()
+                val screenState = turbine.expectMostRecentItem()
+                turbine.cancel()
+
+                // Assert
+                screenState.filteredCurrencies.size.shouldBeEqual(1)
+                val filteredCurrency = screenState.filteredCurrencies.first()
+                filteredCurrency.shortName.shouldBeEqual("INR")
+            }
+        }
+
+        "onAction_clearFilteredCurrenciesInScreenState_whenEmptySearchText" {
+            turbineScope {
+                // Arrange
+                val turbine = SUT.screenState.testIn(this)
+
+                // Act
+                SUT.onAction(SelectCurrencyScreenAction.OnChangeSearchText("Indian"))
+                testDispatcher.scheduler.advanceUntilIdle()
+                val screenStateWithSearchText = turbine.expectMostRecentItem()
+
+                SUT.onAction(SelectCurrencyScreenAction.OnChangeSearchText(""))
+                testDispatcher.scheduler.advanceUntilIdle()
+                val expectedScreenState = turbine.expectMostRecentItem()
+                turbine.cancel()
+
+                // Assert
+                screenStateWithSearchText.filteredCurrencies.shouldNotBeEmpty()
+                expectedScreenState.filteredCurrencies.shouldBeEmpty()
             }
         }
     }

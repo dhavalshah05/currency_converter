@@ -18,6 +18,7 @@ import com.app.R
 import com.app.features.dashboard.data.model.Currency
 import com.fynd.nitrozen.components.appbar.NitrozenAppBar
 import com.fynd.nitrozen.components.divider.NitrozenDivider
+import com.fynd.nitrozen.components.textfield.outlined.NitrozenOutlinedTextField
 import com.fynd.nitrozen.theme.NitrozenTheme
 import com.fynd.nitrozen.utils.extensions.clickableWithRipple
 
@@ -75,6 +76,17 @@ fun SelectCurrencyScreen(
                 }
             }
         )
+
+        NitrozenOutlinedTextField(
+            modifier = Modifier
+                .padding(all = 20.dp),
+            hint = "Search here",
+            value = state.searchText,
+            onValueChange = {
+                onAction(SelectCurrencyScreenAction.OnChangeSearchText(it))
+            }
+        )
+
         if (state.isLoading) {
             Box(
                 modifier = Modifier
@@ -90,7 +102,12 @@ fun SelectCurrencyScreen(
                     .fillMaxWidth()
                     .weight(1F),
             ) {
-                items(state.currencies) { currency ->
+                val items = if (state.searchText.isBlank())
+                    state.currencies
+                else
+                    state.filteredCurrencies
+
+                items(items) { currency ->
                     CurrencyItem(
                         currency = currency,
                         onClick = {

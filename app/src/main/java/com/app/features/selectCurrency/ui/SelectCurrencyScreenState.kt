@@ -5,4 +5,6 @@ import com.app.features.dashboard.data.model.Currency
 data class SelectCurrencyScreenState(
     val isLoading: Boolean = false,
     val currencies: List<Currency> = emptyList(),
+    val searchText: String = "",
+    val filteredCurrencies: List<Currency> = emptyList(),
 )

@@ -44,6 +44,18 @@ class SelectCurrencyViewModel @Inject constructor(
                     _goBack.send(Unit)
                 }
             }
+            is SelectCurrencyScreenAction.OnChangeSearchText -> {
+                _screenState.update { it.copy(searchText = action.searchText.trim()) }
+                viewModelScope.launch {
+                    if (action.searchText.isEmpty()) {
+                        _screenState.update { it.copy(filteredCurrencies = emptyList()) }
+                    } else {
+                        val filteredCurrencies = screenState.value.currencies
+                            .filter { it.fullName.lowercase().contains(action.searchText.lowercase()) }
+                        _screenState.update { it.copy(filteredCurrencies = filteredCurrencies) }
+                    }
+                }
+            }
         }
     }
 }
