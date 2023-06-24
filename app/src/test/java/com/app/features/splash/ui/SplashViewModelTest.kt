@@ -1,11 +1,12 @@
 package com.app.features.splash.ui
 
-import app.cash.turbine.testIn
 import app.cash.turbine.turbineScope
 import com.app.features.dashboard.data.ConfigureExchangeRatesUseCase
+import com.app.services.sync.SyncManager
 import io.kotest.core.spec.style.StringSpec
 import io.mockk.coVerify
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -17,6 +18,7 @@ class SplashViewModelTest : StringSpec() {
 
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var configureExchangeRatesUseCase: ConfigureExchangeRatesUseCase
+    private lateinit var syncManager: SyncManager
     private lateinit var SUT: SplashViewModel
 
     init {
@@ -25,8 +27,10 @@ class SplashViewModelTest : StringSpec() {
 
         beforeEach {
             configureExchangeRatesUseCase = mockk(relaxed = true, relaxUnitFun = true)
+            syncManager = mockk(relaxed = true, relaxUnitFun = true)
             SUT = SplashViewModel(
-                configureExchangeRatesUseCase = configureExchangeRatesUseCase
+                configureExchangeRatesUseCase = configureExchangeRatesUseCase,
+                syncManager = syncManager
             )
         }
 
@@ -50,6 +54,17 @@ class SplashViewModelTest : StringSpec() {
 
                 // Assert
                 assertNotNull(result)
+            }
+        }
+
+        "init_startSync_whenConfigurationSuccess" {
+            turbineScope {
+                // Arrange
+                // Act
+                testDispatcher.scheduler.advanceUntilIdle()
+
+                // Assert
+                verify(exactly = 1) { syncManager.scheduleSyncForOpenExchangeData() }
             }
         }
     }

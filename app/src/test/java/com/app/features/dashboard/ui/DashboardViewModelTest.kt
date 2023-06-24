@@ -78,7 +78,7 @@ class DashboardViewModelTest : StringSpec() {
                 screenStateTurbine.cancel()
 
                 // Assert
-                actualScreenState.amount.shouldBeEqual("")
+                actualScreenState.amount.shouldBeEqual("0")
                 actualScreenState.isLoading.shouldBeFalse()
                 actualScreenState.selectedCurrency.shouldBeEqual("USD")
                 actualScreenState.convertedRates.size.shouldBeEqual(0)
