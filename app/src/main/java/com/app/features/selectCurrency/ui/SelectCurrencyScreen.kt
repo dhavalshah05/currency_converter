@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.R
@@ -63,7 +64,7 @@ fun SelectCurrencyScreen(
             .background(NitrozenTheme.colors.background),
     ) {
         NitrozenAppBar(
-            title = "Select Currency",
+            title = stringResource(id = R.string.label_select_currency),
             leading = {
                 IconButton(onClick = {
                     onAction(SelectCurrencyScreenAction.GoBack)
@@ -80,7 +81,7 @@ fun SelectCurrencyScreen(
         NitrozenOutlinedTextField(
             modifier = Modifier
                 .padding(all = 20.dp),
-            hint = "Search here",
+            hint = stringResource(id = R.string.hint_search_here),
             value = state.searchText,
             onValueChange = {
                 onAction(SelectCurrencyScreenAction.OnChangeSearchText(it))

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Currency Converter</string>
+
+    <string name="label_configuring_currencies">Configuring currencies…</string>
+    <string name="label_converted_currencies">Converted Currencies</string>
+    <string name="label_select_currency">Select Currency</string>
+    <string name="hint_amount">Amount</string>
+    <string name="hint_search_here">Search here</string>
+    <string name="button_convert">Convert</string>
 </resources>
