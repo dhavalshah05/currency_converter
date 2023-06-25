@@ -2,12 +2,13 @@ package com.app.features.dashboard.data
 
 import com.app.db.exchangeRates.ExchangeRateEntity
 import com.app.db.exchangeRates.ExchangeRateEntityQueries
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.assertThrows
 
 @Suppress("PrivatePropertyName")
 class ConvertRatesUseCaseTest : StringSpec() {
@@ -38,7 +39,7 @@ class ConvertRatesUseCaseTest : StringSpec() {
             // Arrange
 
             // Act
-            assertThrows<IllegalArgumentException> {
+            shouldThrow<IllegalArgumentException> {
                 SUT.invoke(
                     shortName = "SAD",
                     amount = 30.0
@@ -62,7 +63,7 @@ class ConvertRatesUseCaseTest : StringSpec() {
                 .getAllExchangeRates()
                 .executeAsList()
             }
-            Assertions.assertEquals(4, actualConvertedRates.size)
+            actualConvertedRates.size.shouldBeEqual(4)
         }
 
         "invoke_returnConvertedRates_whenValidShortName" {
@@ -76,27 +77,23 @@ class ConvertRatesUseCaseTest : StringSpec() {
 
             // For PAK
             val rateForPak = actualConvertedRates.find { it.destinationShortName == "PAK" }
-            Assertions.assertNotNull(rateForPak)
-            requireNotNull(rateForPak)
-            Assertions.assertEquals(30.0, rateForPak.destinationAmount)
+            rateForPak.shouldNotBeNull()
+            rateForPak.destinationAmount.shouldBeEqual(30.0)
 
             // For CAD
             val rateForCAD = actualConvertedRates.find { it.destinationShortName == "CAD" }
-            Assertions.assertNotNull(rateForCAD)
-            requireNotNull(rateForCAD)
-            Assertions.assertEquals(7.5, rateForCAD.destinationAmount)
+            rateForCAD.shouldNotBeNull()
+            rateForCAD.destinationAmount.shouldBeEqual(7.5)
 
             // For INR
             val rateForINR = actualConvertedRates.find { it.destinationShortName == "INR" }
-            Assertions.assertNotNull(rateForINR)
-            requireNotNull(rateForINR)
-            Assertions.assertEquals(20.0, rateForINR.destinationAmount)
+            rateForINR.shouldNotBeNull()
+            rateForINR.destinationAmount.shouldBeEqual(20.0)
 
             // For USD
             val rateForUSD = actualConvertedRates.find { it.destinationShortName == "USD" }
-            Assertions.assertNotNull(rateForUSD)
-            requireNotNull(rateForUSD)
-            Assertions.assertEquals(0.25, rateForUSD.destinationAmount)
+            rateForUSD.shouldNotBeNull()
+            rateForUSD.destinationAmount.shouldBeEqual(0.25)
         }
 
 

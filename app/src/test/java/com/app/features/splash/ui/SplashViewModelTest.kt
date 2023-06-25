@@ -4,6 +4,7 @@ import app.cash.turbine.turbineScope
 import com.app.features.dashboard.data.ConfigureExchangeRatesUseCase
 import com.app.services.sync.SyncManager
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
@@ -11,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.Assertions.*
 
 @Suppress("PrivatePropertyName")
 class SplashViewModelTest : StringSpec() {
@@ -53,7 +53,7 @@ class SplashViewModelTest : StringSpec() {
                 turbine.cancel()
 
                 // Assert
-                assertNotNull(result)
+                result.shouldNotBeNull()
             }
         }
 

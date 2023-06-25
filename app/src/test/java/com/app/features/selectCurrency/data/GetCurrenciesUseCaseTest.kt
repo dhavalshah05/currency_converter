@@ -4,10 +4,10 @@ import com.app.db.currencies.CurrencyEntity
 import com.app.db.currencies.CurrencyEntityQueries
 import com.app.features.dashboard.data.model.Currency
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.equals.shouldBeEqual
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions
 
 @Suppress("PrivatePropertyName")
 class GetCurrenciesUseCaseTest : StringSpec() {
@@ -51,7 +51,7 @@ class GetCurrenciesUseCaseTest : StringSpec() {
             val currencies: List<Currency> = SUT.getCurrencies()
 
             // Assert
-            Assertions.assertEquals(2, currencies.size)
+            currencies.size.shouldBeEqual(2)
         }
 
     }

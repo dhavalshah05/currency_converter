@@ -4,9 +4,12 @@ import app.cash.turbine.turbineScope
 import com.app.features.dashboard.data.model.Currency
 import com.app.features.selectCurrency.data.GetCurrenciesUseCase
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.string.shouldBeEmpty
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -14,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.Assertions.*
 
 @Suppress("PrivatePropertyName")
 class SelectCurrencyViewModelTest : StringSpec() {
@@ -58,8 +60,8 @@ class SelectCurrencyViewModelTest : StringSpec() {
                 screenStateTurbine.cancel()
 
                 // Assert
-                assertFalse(actualScreenState.isLoading)
-                assertEquals(0, actualScreenState.currencies.size)
+                actualScreenState.isLoading.shouldBeFalse()
+                actualScreenState.currencies.size.shouldBeEqual(0)
             }
         }
 
@@ -75,7 +77,7 @@ class SelectCurrencyViewModelTest : StringSpec() {
                 screenStateTurbine.cancel()
 
                 // Assert
-                assertTrue(actualScreenState.isLoading)
+                actualScreenState.isLoading.shouldBeTrue()
             }
         }
 
@@ -92,7 +94,7 @@ class SelectCurrencyViewModelTest : StringSpec() {
                 screenStateTurbine.cancel()
 
                 // Assert
-                assertEquals(2, actualScreenState.currencies.size)
+                actualScreenState.currencies.size.shouldBeEqual(2)
             }
         }
 
@@ -109,8 +111,8 @@ class SelectCurrencyViewModelTest : StringSpec() {
                 val result = turbine.awaitItem()
                 turbine.cancel()
 
-                assertEquals(result.fullName, expectedCurrency.fullName)
-                assertEquals(result.shortName, expectedCurrency.shortName)
+                expectedCurrency.fullName.shouldBeEqual(result.fullName)
+                expectedCurrency.shortName.shouldBeEqual(result.shortName)
             }
         }
 
@@ -127,7 +129,7 @@ class SelectCurrencyViewModelTest : StringSpec() {
                 turbine.cancel()
 
                 // Assert
-                assertNotNull(result)
+                result.shouldNotBeNull()
             }
         }
 

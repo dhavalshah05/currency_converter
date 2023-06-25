@@ -1,23 +1,19 @@
 package com.app.features.dashboard.ui
 
-import app.cash.turbine.testIn
 import app.cash.turbine.turbineScope
 import com.app.features.dashboard.data.ConvertRatesUseCase
 import com.app.features.dashboard.data.model.ConvertedRate
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.nulls.shouldNotBeNull
-import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldMatch
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.Assertions.*
 
 @Suppress("PrivatePropertyName")
 class DashboardViewModelTest : StringSpec() {
@@ -97,7 +93,7 @@ class DashboardViewModelTest : StringSpec() {
                 screenStateTurbine.cancel()
 
                 // Assert
-                assertEquals(AMOUNT, actualScreenState.amount)
+                actualScreenState.amount.shouldBeEqual(AMOUNT)
             }
         }
 
@@ -113,7 +109,7 @@ class DashboardViewModelTest : StringSpec() {
                 screenStateTurbine.cancel()
 
                 // Assert
-                assertEquals(CURRENCY, actualScreenState.selectedCurrency)
+                actualScreenState.selectedCurrency.shouldBeEqual(CURRENCY)
             }
         }
 
@@ -175,9 +171,9 @@ class DashboardViewModelTest : StringSpec() {
                 screenStateTurbine.cancel()
 
                 // Assert
-                assertTrue(loadingStartedScreenState.isLoading)
-                assertEquals(2, actualScreenState.convertedRates.size)
-                assertFalse(actualScreenState.isLoading)
+                loadingStartedScreenState.isLoading.shouldBeTrue()
+                actualScreenState.convertedRates.size.shouldBeEqual(2)
+                actualScreenState.isLoading.shouldBeFalse()
             }
         }
 

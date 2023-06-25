@@ -1,11 +1,11 @@
 package com.app.services.networking
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.equals.shouldBeEqual
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.assertThrows
 
 class ApiExecutorTest : StringSpec() {
     init {
@@ -23,7 +23,7 @@ class ApiExecutorTest : StringSpec() {
             val result: String = SUT.executeGet("")
 
             // Assert
-            Assertions.assertEquals("RESULT", result)
+            result.shouldBeEqual("RESULT")
         }
 
         "executeGet_throwException_whenClientThrowException" {
@@ -34,10 +34,9 @@ class ApiExecutorTest : StringSpec() {
             val SUT = ApiExecutor(client)
 
             // Act
+
             // Assert
-            assertThrows<Exception> {
-                val result: String = SUT.executeGet("")
-            }
+            shouldThrow<Exception> { SUT.executeGet("") }
         }
     }
 }

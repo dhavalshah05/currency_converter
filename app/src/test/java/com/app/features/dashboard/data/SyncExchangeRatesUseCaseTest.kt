@@ -4,12 +4,12 @@ import com.app.db.currencies.CurrencyEntityQueries
 import com.app.db.exchangeRates.ExchangeRateEntityQueries
 import com.app.features.dashboard.data.remote.models.ApiExchangeRates
 import com.app.services.networking.repositories.OpenExchangeRemoteRepository
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.assertThrows
 
 @Suppress("LocalVariableName", "PrivatePropertyName")
 class SyncExchangeRatesUseCaseTest : StringSpec() {
@@ -92,7 +92,7 @@ class SyncExchangeRatesUseCaseTest : StringSpec() {
             // Act
 
             // Assert
-            assertThrows<Exception> { SUT.invoke() }
+            shouldThrow<Exception> { SUT.invoke() }
             coVerify(exactly = 1) { repository.getCurrencies() }
             coVerify(exactly = 0) { repository.getExchangeRatesForUSD() }
             verify(exactly = 0) { currencyEntityQueries.createCurrency(any(), any()) }
