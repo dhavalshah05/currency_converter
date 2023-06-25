@@ -3,6 +3,7 @@ package com.app.features.dashboard.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.features.dashboard.data.ConvertRatesUseCase
+import com.fynd.nitrozen.components.textfield.TextFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -27,9 +28,18 @@ class DashboardViewModel @Inject constructor(
     fun onAction(action: DashboardScreenAction) {
         when (action) {
             is DashboardScreenAction.OnAmountChange -> {
+                val amount = action.amount
+                val amountState = if (amount.isBlank())
+                    TextFieldState.Error("Enter valid amount")
+                else if (amount.toDoubleOrNull() == null)
+                    TextFieldState.Error("Enter valid amount")
+                else
+                    TextFieldState.Idle()
+
                 _screenState.value = screenState.value.copy(
                     amount = action.amount,
-                    convertedRates = emptyList()
+                    convertedRates = emptyList(),
+                    amountState = amountState
                 )
             }
             is DashboardScreenAction.OnCurrencyChange -> {

@@ -3,11 +3,15 @@ package com.app.features.dashboard.ui
 import app.cash.turbine.turbineScope
 import com.app.features.dashboard.data.ConvertRatesUseCase
 import com.app.features.dashboard.data.model.ConvertedRate
+import com.fynd.nitrozen.components.textfield.TextFieldState
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.matchers.types.shouldBeTypeOf
+import io.ktor.util.reflect.*
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -75,6 +79,7 @@ class DashboardViewModelTest : StringSpec() {
 
                 // Assert
                 actualScreenState.amount.shouldBeEqual("0")
+                actualScreenState.amountState.shouldBeInstanceOf<TextFieldState.Idle>()
                 actualScreenState.isLoading.shouldBeFalse()
                 actualScreenState.selectedCurrency.shouldBeEqual("USD")
                 actualScreenState.convertedRates.size.shouldBeEqual(0)
@@ -94,6 +99,36 @@ class DashboardViewModelTest : StringSpec() {
 
                 // Assert
                 actualScreenState.amount.shouldBeEqual(AMOUNT)
+            }
+        }
+
+        "onAction_updateAmountStateInScreenState_whenEmptyAmount" {
+            turbineScope {
+                // Arrange
+                val screenStateTurbine = SUT.screenState.testIn(this)
+
+                // Act
+                SUT.onAction(DashboardScreenAction.OnAmountChange(""))
+                val actualScreenState = screenStateTurbine.expectMostRecentItem()
+                screenStateTurbine.cancel()
+
+                // Assert
+                actualScreenState.amountState.shouldBeInstanceOf<TextFieldState.Error>()
+            }
+        }
+
+        "onAction_errorAmountState_whenInvalidAmount" {
+            turbineScope {
+                // Arrange
+                val screenStateTurbine = SUT.screenState.testIn(this)
+
+                // Act
+                SUT.onAction(DashboardScreenAction.OnAmountChange("90..00"))
+                val actualScreenState = screenStateTurbine.expectMostRecentItem()
+                screenStateTurbine.cancel()
+
+                // Assert
+                actualScreenState.amountState.shouldBeInstanceOf<TextFieldState.Error>()
             }
         }
 

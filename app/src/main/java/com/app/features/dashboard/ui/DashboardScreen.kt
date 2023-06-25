@@ -64,6 +64,7 @@ fun DashboardScreen(
                 onValueChange = {
                     onAction(DashboardScreenAction.OnAmountChange(it))
                 },
+                textFieldState = state.amountState,
                 trailingIcon = {
                     NitrozenChip(
                         text = state.selectedCurrency,
@@ -90,6 +91,7 @@ fun DashboardScreen(
                 onClick = {
                     onAction(DashboardScreenAction.CalculateExchangeRates)
                 },
+                enabled = state.shouldEnableConvertButton,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
