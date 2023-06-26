@@ -9,7 +9,7 @@ import io.ktor.http.*
 
 class ApiExecutorTest : StringSpec() {
     init {
-        "executeGet_returnSuccess_whenClientReturnSuccess" {
+        "given client return 200 - when executeGet - then return Result" {
             // Arrange
             val client = HttpClient(MockEngine { request ->
                 respond(
@@ -26,7 +26,7 @@ class ApiExecutorTest : StringSpec() {
             result.shouldBeEqual("RESULT")
         }
 
-        "executeGet_throwException_whenClientThrowException" {
+        "given client throw exception - when executeGet - then throw exception" {
             // Arrange
             val client = HttpClient(MockEngine { request ->
                 throw Exception("Sample Exception")

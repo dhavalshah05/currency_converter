@@ -68,7 +68,7 @@ class DashboardViewModelTest : StringSpec() {
             )
         }
 
-        "init_setInitialScreenState" {
+        "given ViewModel - when init - then set initial screen state" {
             turbineScope {
                 // Arrange
                 val screenStateTurbine = SUT.screenState.testIn(this)
@@ -86,7 +86,7 @@ class DashboardViewModelTest : StringSpec() {
             }
         }
 
-        "onAction_updateAmountInScreenState_whenAmountChanged" {
+        "given valid amount - when change amount - then update amount in screen state" {
             turbineScope {
                 // Arrange
                 val screenStateTurbine = SUT.screenState.testIn(this)
@@ -102,7 +102,7 @@ class DashboardViewModelTest : StringSpec() {
             }
         }
 
-        "onAction_updateAmountStateInScreenState_whenEmptyAmount" {
+        "given empty amount - when change amount - then set amount error in screen state" {
             turbineScope {
                 // Arrange
                 val screenStateTurbine = SUT.screenState.testIn(this)
@@ -117,7 +117,7 @@ class DashboardViewModelTest : StringSpec() {
             }
         }
 
-        "onAction_errorAmountState_whenInvalidAmount" {
+        "given invalid amount - when change amount - then set amount error in screen state" {
             turbineScope {
                 // Arrange
                 val screenStateTurbine = SUT.screenState.testIn(this)
@@ -132,7 +132,7 @@ class DashboardViewModelTest : StringSpec() {
             }
         }
 
-        "onAction_updateCurrencyInScreenState_whenCurrencyChanged" {
+        "given valid currency - when change currency - then update currency in screen state" {
             turbineScope {
                 // Arrange
                 val screenStateTurbine = SUT.screenState.testIn(this)
@@ -148,7 +148,7 @@ class DashboardViewModelTest : StringSpec() {
             }
         }
 
-        "onAction_clearConvertedRatesInScreenState_whenCurrencyChanged" {
+        "given valid currency - when change currency - then clear converted rates in screen state" {
             turbineScope {
                 // Arrange
                 val screenStateTurbine = SUT.screenState.testIn(this)
@@ -167,7 +167,7 @@ class DashboardViewModelTest : StringSpec() {
             }
         }
 
-        "onAction_clearConvertedRatesInScreenState_whenAmountChanged" {
+        "given valid amount - when change amount - then clear converted rates in screen state" {
             turbineScope {
                 // Arrange
                 val screenStateTurbine = SUT.screenState.testIn(this)
@@ -186,7 +186,7 @@ class DashboardViewModelTest : StringSpec() {
             }
         }
 
-        "onAction_updateConvertedRatesInScreenState_whenExchangeRatesCalculated" {
+        "given valid amount and currency - when calculate exchange rate - then update converted rates in screen state" {
             turbineScope {
                 // Arrange
                 val screenStateTurbine = SUT.screenState.testIn(this)
@@ -212,7 +212,7 @@ class DashboardViewModelTest : StringSpec() {
             }
         }
 
-        "onAction_updateNavigateToSelectCurrency_whenSelectCurrency" {
+        "given ideal screen - when select currency - then navigate to select currency" {
             turbineScope {
                 // Arrange
                 val turbine = SUT.navigateToSelectCurrency.testIn(this)
