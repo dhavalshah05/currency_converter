@@ -212,6 +212,24 @@ class DashboardViewModelTest : StringSpec() {
             }
         }
 
+        "given 0 amount - when calculate exchange rate - then display error message" {
+            turbineScope {
+                // Arrange
+                val turbine = SUT.errorMessage.testIn(this)
+                SUT.onAction(DashboardScreenAction.OnAmountChange("0"))
+                SUT.onAction(DashboardScreenAction.OnCurrencyChange(CURRENCY))
+
+                // Act
+                SUT.onAction(DashboardScreenAction.CalculateExchangeRates)
+                testDispatcher.scheduler.advanceUntilIdle()
+                val result = turbine.awaitItem()
+                turbine.cancel()
+
+                // Assert
+                result.shouldBeEqual("Amount should be greater than 0")
+            }
+        }
+
         "given ideal screen - when select currency - then navigate to select currency" {
             turbineScope {
                 // Arrange

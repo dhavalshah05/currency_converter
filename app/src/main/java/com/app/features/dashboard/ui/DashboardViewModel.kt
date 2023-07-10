@@ -21,6 +21,9 @@ class DashboardViewModel @Inject constructor(
     private val _navigateToSelectCurrency = Channel<Unit>()
     val navigateToSelectCurrency: Flow<Unit> = _navigateToSelectCurrency.receiveAsFlow()
 
+    private val _errorMessage = Channel<String>()
+    val errorMessage: Flow<String> = _errorMessage.receiveAsFlow()
+
     init {
         _screenState.value = DashboardScreenState()
     }
@@ -64,6 +67,11 @@ class DashboardViewModel @Inject constructor(
         val amount = screenState.value.amount
 
         viewModelScope.launch {
+            if (amount.toInt() <= 0) {
+                _errorMessage.send("Amount should be greater than 0")
+                return@launch
+            }
+
             _screenState.value = screenState.value.copy(isLoading = true)
             val convertedRates = convertRatesUseCase.invoke(shortName = currency, amount = amount.toDouble())
             _screenState.value = screenState.value.copy(convertedRates = convertedRates, isLoading = false)
