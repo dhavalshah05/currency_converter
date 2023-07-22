@@ -2,18 +2,18 @@ package com.app.features.dashboard.data
 
 import com.app.db.exchangeRates.ExchangeRateEntity
 import com.app.db.exchangeRates.ExchangeRateEntityQueries
+import com.app.features.conversionLogs.data.CreateConversionLogUseCase
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.nulls.shouldNotBeNull
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 
 @Suppress("PrivatePropertyName")
 class ConvertRatesUseCaseTest : StringSpec() {
 
     private lateinit var exchangeRateEntityQueriesMock: ExchangeRateEntityQueries
+    private lateinit var createConversionLogUseCase: CreateConversionLogUseCase
     private lateinit var SUT: ConvertRatesUseCase
 
     init {
@@ -30,8 +30,14 @@ class ConvertRatesUseCaseTest : StringSpec() {
                 )
             }
 
+            createConversionLogUseCase = mockk(
+                relaxed = true,
+                relaxUnitFun = true
+            )
+
             SUT = ConvertRatesUseCase(
-                exchangeRateEntityQueries = exchangeRateEntityQueriesMock
+                exchangeRateEntityQueries = exchangeRateEntityQueriesMock,
+                createConversionLogUseCase = createConversionLogUseCase
             )
         }
 
@@ -96,6 +102,18 @@ class ConvertRatesUseCaseTest : StringSpec() {
             rateForUSD.destinationAmount.shouldBeEqual(0.25)
         }
 
+        "given valid shortName and amount - when invoke - then create conversion log" {
+            // Arrange
+            // Act
+            SUT.invoke(
+                shortName = "PAK",
+                amount = 30.0
+            )
+            // Assert
+            coVerify(exactly = 1) {
+                createConversionLogUseCase.create("PAK", 30.0)
+            }
+        }
 
     }
 }
