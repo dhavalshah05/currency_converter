@@ -7,7 +7,7 @@ import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 
-class ApiExecutorTest : StringSpec() {
+internal class ApiExecutorTest : StringSpec() {
     init {
         "given client return 200 - when executeGet - then return Result" {
             // Arrange

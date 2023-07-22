@@ -17,6 +17,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 
+@Suppress("PrivatePropertyName")
 internal class ConversionLogsViewModelTest : StringSpec() {
 
     companion object {

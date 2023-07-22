@@ -8,7 +8,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 
 @Suppress("PrivatePropertyName")
-class ConfigureExchangeRatesUseCaseTest : StringSpec() {
+internal class ConfigureExchangeRatesUseCaseTest : StringSpec() {
 
     companion object {
         private val CURRENCIES = listOf(

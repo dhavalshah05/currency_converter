@@ -10,7 +10,7 @@ import io.mockk.mockk
 import io.mockk.verify
 
 @Suppress("PrivatePropertyName")
-class GetCurrenciesUseCaseTest : StringSpec() {
+internal class GetCurrenciesUseCaseTest : StringSpec() {
 
     companion object {
         private val CURRENCIES = listOf(

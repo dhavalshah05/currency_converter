@@ -10,7 +10,7 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.mockk.*
 
 @Suppress("PrivatePropertyName")
-class ConvertRatesUseCaseTest : StringSpec() {
+internal class ConvertRatesUseCaseTest : StringSpec() {
 
     private lateinit var exchangeRateEntityQueriesMock: ExchangeRateEntityQueries
     private lateinit var createConversionLogUseCase: CreateConversionLogUseCase

@@ -12,7 +12,7 @@ import io.mockk.mockk
 import io.mockk.verify
 
 @Suppress("LocalVariableName", "PrivatePropertyName")
-class SyncExchangeRatesUseCaseTest : StringSpec() {
+internal class SyncExchangeRatesUseCaseTest : StringSpec() {
 
     private lateinit var repository: OpenExchangeRemoteRepository
     private lateinit var currencyEntityQueries: CurrencyEntityQueries

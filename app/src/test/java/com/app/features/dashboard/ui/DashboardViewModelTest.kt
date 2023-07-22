@@ -20,7 +20,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 
 @Suppress("PrivatePropertyName")
-class DashboardViewModelTest : StringSpec() {
+internal class DashboardViewModelTest : StringSpec() {
 
     companion object {
         private const val AMOUNT = "10"

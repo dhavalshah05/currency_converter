@@ -19,7 +19,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 
 @Suppress("PrivatePropertyName")
-class SelectCurrencyViewModelTest : StringSpec() {
+internal class SelectCurrencyViewModelTest : StringSpec() {
 
     companion object {
         private val CURRENCIES = listOf(

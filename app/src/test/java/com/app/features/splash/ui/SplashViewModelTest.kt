@@ -14,7 +14,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 
 @Suppress("PrivatePropertyName")
-class SplashViewModelTest : StringSpec() {
+internal class SplashViewModelTest : StringSpec() {
 
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var configureExchangeRatesUseCase: ConfigureExchangeRatesUseCase
