@@ -2,6 +2,7 @@ package com.app.di.application
 
 import com.app.db.MyDatabase
 import com.app.features.conversionLogs.data.CreateConversionLogUseCase
+import com.app.features.conversionLogs.data.GetConversionLogsUseCase
 import com.app.features.dashboard.data.ConfigureExchangeRatesUseCase
 import com.app.features.dashboard.data.ConvertRatesUseCase
 import com.app.features.dashboard.data.SyncExchangeRatesUseCase
@@ -62,6 +63,15 @@ class UseCaseModule {
         myDatabase: MyDatabase
     ): CreateConversionLogUseCase {
         return CreateConversionLogUseCase(
+            conversionLogEntityQueries = myDatabase.conversionLogEntityQueries
+        )
+    }
+
+    @Provides
+    fun getConversionLogsUseCase(
+        myDatabase: MyDatabase
+    ): GetConversionLogsUseCase {
+        return GetConversionLogsUseCase(
             conversionLogEntityQueries = myDatabase.conversionLogEntityQueries
         )
     }
