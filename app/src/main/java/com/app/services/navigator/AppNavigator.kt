@@ -29,13 +29,11 @@ class AppNavigator(
     private val navigationResultContracts = NavigationResultContracts(fragmentManager)
 
     private fun getRootFragmentId(): Int {
-        // Here at 0 position, we do not have our own fragments.
-        // User defined fragments will start from position 1.
-        return navController.backQueue[1].destination.id
+        return navController.visibleEntries.value[0].destination.id
     }
 
     private fun isAvailableInStack(@IdRes id: Int): Boolean {
-        return navController.backQueue.map { it.destination.id }.contains(id)
+        return navController.visibleEntries.value.map { it.destination.id }.contains(id)
     }
 
     override fun getResultContracts(): NavigationResultContracts {
