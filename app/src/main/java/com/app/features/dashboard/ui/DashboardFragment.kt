@@ -35,7 +35,7 @@ class DashboardFragment : Fragment() {
     }
 
     private fun observeNavContractEvents() {
-        navigator.getResultContracts().selectCurrencyNavResult.observeResult("selected_currency", this) {
+        navigator.getResultContracts().selectCurrencyNavResult.observeResult(this) {
             val result = it ?: return@observeResult
             viewModel.onAction(DashboardScreenAction.OnCurrencyChange(result.currency.shortName))
         }

@@ -5,10 +5,12 @@ import android.os.Parcelable
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 
-class NavigationResultContract<T: Parcelable>(private val fragmentManager: FragmentManager) {
+class NavigationResultContract<T: Parcelable>(
+    private val key: String,
+    private val fragmentManager: FragmentManager,
+) {
 
     fun observeResult(
-        key: String,
         lifecycleOwner: LifecycleOwner,
         callback: (T?) -> Unit
     ) {
@@ -19,7 +21,6 @@ class NavigationResultContract<T: Parcelable>(private val fragmentManager: Fragm
     }
 
     fun setResult(
-        key: String,
         result: T
     ) {
         fragmentManager.setFragmentResult(

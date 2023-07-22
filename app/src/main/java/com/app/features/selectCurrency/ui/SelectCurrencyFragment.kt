@@ -62,10 +62,7 @@ class SelectCurrencyFragment : Fragment() {
     }
 
     private fun selectCurrencyAndGoBack(currency: Currency) {
-        navigator.getResultContracts().selectCurrencyNavResult.setResult(
-            key = "selected_currency",
-            result = SelectCurrencyNavResult(currency)
-        )
+        navigator.getResultContracts().selectCurrencyNavResult.setResult(SelectCurrencyNavResult(currency))
         navigator.goBack()
     }
 }
