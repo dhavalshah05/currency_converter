@@ -92,67 +92,62 @@ sqldelight {
 dependencies {
 
     // AndroidX
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
-
-    // Google
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation libs.androidX.coreKtx
+    implementation libs.androidX.appCompat
+    implementation libs.androidX.constraintLayout
+    implementation libs.androidX.lifecycle.viewModel
 
     // Ktor
-    implementation 'io.ktor:ktor-client-core:2.3.1'
-    implementation 'io.ktor:ktor-client-okhttp:2.3.1'
-    implementation 'io.ktor:ktor-client-content-negotiation:2.3.1'
-    implementation 'io.ktor:ktor-serialization-kotlinx-json:2.3.1'
+    implementation libs.ktor.client.core
+    implementation libs.ktor.client.okhttp
+    implementation libs.ktor.client.contentNegotiation
+    implementation libs.ktor.serialization
+    // Test - Ktor
+    testImplementation libs.ktor.client.mock
 
     // Logging Interceptor
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
+    implementation libs.loggingInterceptor
 
     // Coroutine
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+    implementation libs.coroutines.core
+    implementation libs.coroutines.android
 
     // Hilt
-    implementation "com.google.dagger:hilt-android:2.44"
-    kapt "com.google.dagger:hilt-compiler:2.44"
+    implementation libs.dagger.hiltAndroid
+    kapt libs.dagger.hiltCompiler
 
     // Compose
-    implementation platform('androidx.compose:compose-bom:2023.06.01')
-    implementation 'androidx.compose.material:material'
-    debugImplementation 'androidx.compose.ui:ui-tooling'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation platform(libs.compose.bom)
+    implementation libs.compose.material
+    debugImplementation libs.compose.ui.tooling
+    implementation libs.compose.ui.toolingPreview
 
     // SQLDelight
-    implementation "com.squareup.sqldelight:android-driver:1.5.4"
+    implementation libs.sqlDelight.androidDriver
+    // Test - SQLDelight
+    testImplementation libs.sqlDelight.sqliteDriver
 
     // Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:2.6.0"
-    implementation "androidx.navigation:navigation-ui-ktx:2.6.0"
+    implementation libs.navigation.fragment
+    implementation libs.navigation.ui
 
     // UI
-    implementation 'com.github.gofynd:nitrozen-android:1.1.0'
+    implementation libs.nitrozenAndroid
 
     // WorkManager
-    implementation "androidx.work:work-runtime-ktx:2.8.1"
-    implementation 'androidx.hilt:hilt-work:1.0.0'
-    kapt 'androidx.hilt:hilt-compiler:1.0.0'
+    implementation libs.androidX.workRuntime
+    implementation libs.hilt.work
+    kapt libs.hilt.compiler
 
     // Test - Kotest
-    testImplementation 'io.kotest:kotest-runner-junit5:5.6.2'
-    testImplementation 'io.kotest:kotest-assertions-core:5.6.2'
-    testImplementation 'io.kotest:kotest-property:5.6.2'
+    testImplementation libs.kotest.runner
+    testImplementation libs.kotest.assertionCore
+    testImplementation libs.kotest.property
 
     // Test - Mock
-    testImplementation "io.mockk:mockk-android:1.13.5"
-    testImplementation "io.mockk:mockk-agent:1.13.5"
-
-    // Test - Ktor
-    testImplementation "io.ktor:ktor-client-mock:2.3.1"
-
-    // Test - SQLDelight
-    testImplementation 'com.squareup.sqldelight:sqlite-driver:1.5.4'
+    testImplementation libs.mockk.android
+    testImplementation libs.mockk.agent
 
     // Test - Flow
-    testImplementation 'app.cash.turbine:turbine:1.0.0'
+    testImplementation libs.turbine
 }
