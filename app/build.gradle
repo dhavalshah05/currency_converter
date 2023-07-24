@@ -1,11 +1,11 @@
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.plugin.serialization'
-    id 'com.google.dagger.hilt.android'
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.sqlDelight)
+    alias(libs.plugins.daggerHilt)
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
-    id 'com.squareup.sqldelight'
 }
 
 android {
@@ -69,7 +69,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.0'
+        kotlinCompilerExtensionVersion libs.versions.composeKotlinCompiler.get()
     }
 
     testOptions {

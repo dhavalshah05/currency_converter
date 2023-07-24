@@ -1,4 +1,6 @@
 [versions]
+android = "7.4.2"
+kotlin = "1.8.0"
 coroutine = "1.7.1"
 ktor = "2.3.1"
 kotest = "5.6.2"
@@ -7,9 +9,19 @@ sqlDelight = "1.5.4"
 turbine = "1.0.0"
 navigation = "2.6.0"
 composeBom = "2023.06.01"
+composeKotlinCompiler = "1.4.0"
 daggerHilt = "2.44"
 httpLoggingInterceptor = "4.10.0"
 hilt = "1.0.0"
+
+[plugins]
+
+android-application = { id = "com.android.application", version.ref = "android" }
+android-library = { id = "com.android.library", version.ref = "android" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+daggerHilt = { id = "com.google.dagger.hilt.android", version.ref = "daggerHilt" }
+sqlDelight = { id = "com.squareup.sqldelight", version.ref = "sqlDelight" }
 
 [libraries]
 
