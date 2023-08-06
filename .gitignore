@@ -48,3 +48,6 @@ freeline_project_description.json
 
 # Release
 app/release
+
+# Credentials File
+credentials.properties
